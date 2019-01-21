@@ -12,14 +12,14 @@ import os
 cwd = os.getcwd()
 
 
-RE=Rel_ent(cwd + '/chain.out',cwd + '/chainprob.out',cwd + '/lnprior.out')
+RE=Rel_ent(cwd + '/REdata/chain.out',cwd + '/REdata/chainprob.out',cwd + '/REdata/lnprior.out')
 re=RE.Run()
 print(re)
 
 
-M = np.genfromtxt(cwd+'/exp_rel/M.txt')
+M = np.genfromtxt(cwd+'/EREdata/M.txt')
 def usr_func(theta):
      return M@theta
-ERE=Exp_rel_ent(cwd+'/exp_rel/D1_sample.txt',cwd+'/exp_rel/C.txt',5,12)
+ERE=Exp_rel_ent(cwd+'/EREdata/D1_sample.txt',cwd+'/EREdata/C.txt',5,12)
 ere=ERE.Run(usr_func)
 print(ere)
