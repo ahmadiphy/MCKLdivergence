@@ -6,7 +6,7 @@ Created on Sun Jan 13 00:51:55 2019
 @author: ahmadi
 """
 
-from MCKLdivergence import Rel_ent,Exp_rel_ent
+from MCKLD import Rel_ent,Exp_rel_ent
 import numpy as np
 import os
 cwd = os.getcwd()
