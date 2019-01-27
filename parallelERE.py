@@ -51,3 +51,8 @@ def expecte_relative_entropy(sample,likelihood_cov,fun,l,n):
         print ("time spent with ", size, " threads in milliseconds")
         print ("-----", int((time.time()-start_time)*1000), "-----")
         print(total[0]/l)
+
+if __name__ == "__main__":
+    path_0 = int(sys.argv[1])
+    path_1 = int(sys.argv[2])
+    mainSRC = int(sys.argv[3])
