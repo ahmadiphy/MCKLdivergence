@@ -127,3 +127,5 @@ class Exp_rel_ent(BaseFuncs):
             return result
         else:
             self.printErr('State Error')
+class PExp_rel_ent(BaseFuncs):
+    pass
