@@ -128,4 +128,4 @@ class Exp_rel_ent(BaseFuncs):
         else:
             self.printErr('State Error')
 class PExp_rel_ent(BaseFuncs):
-    pass
+    "run parallel function parallelERE.py by passing input functions"
