@@ -6,7 +6,7 @@
 
 __authors__ = "Ahmad Mehrabi & Abolfazl Ahmadi Rahmat"
 __license__ = "MIT"
-__version_info__ = ('21','1','2019')
+__version_info__ = ('7','2','2019')
 __version__ = '-'.join(__version_info__)
 __status__ = "Development"
 
