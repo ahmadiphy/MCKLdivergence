@@ -53,9 +53,11 @@ def expecte_relative_entropy(sample,likelihood_cov,fun,l,n):
         print(total[0]/l)
 
 if __name__ == "__main__":
-    sample_path = int(sys.argv[1])
-    likeC_path = int(sys.argv[2])
-    mainSRC = int(sys.argv[3])
+    sample_path = sys.argv[1]
+    likeC_path = sys.argv[2]
+    mainSRC = sys.argv[3]
+    l = int(sys.argv[4])
+    n = int(sys.argv[5])
     sample = np.genfromtxt(sample_path)
     likelihood_cov = np.genfromtxt(likeC_path)
     expecte_relative_entropy(sample,likelihood_cov,fun,l,n)
