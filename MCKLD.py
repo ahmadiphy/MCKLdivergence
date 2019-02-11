@@ -129,7 +129,7 @@ class Exp_rel_ent(BaseFuncs):
             self.printErr('State Error')
 class PExp_rel_ent(BaseFuncs):
     'run parallel function parallelERE.py by passing input functions'
-    def __init__(self,sample_path=None,likeC_path=None,l_in=0,n_in=0):
+    def __init__(self,sample_path=None,likeC_path=None,l_in=0,n_in=0,):
         self.state=False
         if sample_path!=None:
             if likeC_path!=None:
@@ -139,9 +139,12 @@ class PExp_rel_ent(BaseFuncs):
         else:
             self.printErr('input file sample_path error')
         if self.state==True:
-    def run():
-        bashCommand="mpirun -np 1 python ./parallelERE.py"
-        bashCommand=bashCommand+" "+" "+" "
+            self.sPath=sample_path
+            self.lPath=likeC_path
+            
+    def run(self,coreN):
+        bashCommand="mpirun -np "str(coreN)" python ./parallelERE.py"
+        bashCommand=bashCommand+" "+str(self.sPath)+" "+str(self.lPath)+" "
         import subprocess
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
