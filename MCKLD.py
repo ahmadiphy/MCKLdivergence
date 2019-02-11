@@ -129,3 +129,11 @@ class Exp_rel_ent(BaseFuncs):
             self.printErr('State Error')
 class PExp_rel_ent(BaseFuncs):
     "run parallel function parallelERE.py by passing input functions"
+    def __init__():
+        pass
+    def run():
+        bashCommand="mpirun -np 1 python ./parallelERE.py"
+        bashCommand=bashCommand+" "+" "+" "
+        import subprocess
+        process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+        output, error = process.communicate()
