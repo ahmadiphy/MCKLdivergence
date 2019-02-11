@@ -141,10 +141,12 @@ class PExp_rel_ent(BaseFuncs):
         if self.state==True:
             self.sPath=sample_path
             self.lPath=likeC_path
-            
+            self.fPath=""
+            self.l=l_in
+            self.n=n_in
     def run(self,coreN):
         bashCommand="mpirun -np "str(coreN)" python ./parallelERE.py"
-        bashCommand=bashCommand+" "+str(self.sPath)+" "+str(self.lPath)+" "
+        bashCommand=bashCommand+" "+str(self.sPath)+" "+str(self.lPath)+" "+" "+str(self.l)+" "+str(self.n)
         import subprocess
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
