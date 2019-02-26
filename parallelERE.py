@@ -1,6 +1,4 @@
 import sys
-nin=int(sys.argv[1])
-nn=nin
 
 import numpy as np
 from numpy.linalg import inv
@@ -13,19 +11,16 @@ import time
 if __name__ == "__main__":
     sample_path = sys.argv[1]
     likeC_path = sys.argv[2]
-    mainSRC = sys.argv[3]
-    l = int(sys.argv[4])
-    n = int(sys.argv[5])
+    M_path = sys.argv[3]
+    mainSRC = sys.argv[4]
+    l = int(sys.argv[5])
+    nn = int(sys.argv[6])
     sample = np.genfromtxt(sample_path)
-    likelihood_cov = np.genfromtxt(likeC_path)
-sample_path=cwd + '/D1_sample.txt'
+    like_cov = np.genfromtxt(likeC_path)
+    M = np.genfromtxt(M_path)
+    ere=0
 
 
-sample = np.genfromtxt(sample_path)
-like_cov = np.genfromtxt(cwd + '/C.txt')
-M = np.genfromtxt(cwd + '/M.txt')
-ere=0
-ti=0
 
 
 def model_fun(theta):
@@ -87,6 +82,4 @@ def expecte_relative_entropy(sample,likelihood_cov,fun,l,n):
          print ("-----", int((time.time()-start_time)*1000), "-----")
          exp_res=total[0]/fl
          return exp_res
-         file = open(cwd+'/data/data.txt','a')
-         file.write(str(exp_res))
-ere=expecte_relative_entropy(sample,like_cov,model_fun,nn,10) 
+expecte_relative_entropy(sample,like_cov,model_fun,nn,10) 
