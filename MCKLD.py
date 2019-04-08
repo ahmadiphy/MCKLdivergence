@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 @author: Abolfazl Ahmadi
@@ -6,7 +5,7 @@
 
 __authors__ = "Ahmad Mehrabi & Abolfazl Ahmadi Rahmat"
 __license__ = "MIT"
-__version_info__ = ('7','2','2019')
+__version_info__ = ('8','April','2019')
 __version__ = '-'.join(__version_info__)
 __status__ = "Development"
 
@@ -20,6 +19,8 @@ except:
     __check_mce_installed__=False
     
 import numpy as np
+import inspect, os
+
 
 class BaseFuncs:
     def printErr(self,info):
@@ -42,7 +43,7 @@ class Rel_ent(BaseFuncs):
         else:
             self.printErr('Problem in loading chain!')
         
-        if(self.state==True):
+        if self.state==True:
             self.printInfo('Loading chain from {}'.format(chain_path))
             theta = np.genfromtxt(chain_path)
             self.printInfo('Loading lnp from {}'.format(lnp_path))
@@ -81,55 +82,7 @@ class Rel_ent(BaseFuncs):
             return 0
 class Exp_rel_ent(BaseFuncs):
     'this is expecte_relative_entropy form of the package'
-    def __init__(self,sample_path=None,likeC_path=None,l_in=0,n_in=0):
-        self.state=False
-        if sample_path!=None:
-            if likeC_path!=None:
-                self.state=True
-            else:
-                self.printErr('input file likeC_path error')
-        else:
-            self.printErr('input file sample_path error')
-        if self.state==True:
-            self.printInfo('file importing...')
-            self.sample = np.genfromtxt(sample_path)
-            self.like_cov = np.genfromtxt(likeC_path)
-            self.l=l_in
-            self.n=n_in
-        if len(self.like_cov)!=self.n and len(self.like_cov[0])!=self.n:
-            self.printErr('The likelihood_cov matrix should be n by n')
-            self.state=False
-        if l_in>len(self.sample):
-            self.printErr('The number of sample used to estimate expected relative entropy should be smaller than given sample size')
-            self.state=False
-    #This function has been used in the code
-    def MAH_Distance(self,x,y):
-        return np.transpose(x)@y@x
-    def Run(self,fun):
-        if self.state==True:
-            from numpy.linalg import inv
-            self.printInfo('Expecte Relative Entropy (ERE):')
-            self.printInfo('genertaing data sample...')
-            cov_like_inv = inv(self.like_cov)
-            data = np.zeros((self.l,self.n))
-            for i in range(self.l):
-                data[i] = np.random.multivariate_normal(fun(self.sample[i]),self.like_cov) 
-            exp_rel = 0
-            for i in range(self.l):
-                ss = 0
-                for j in range(self.l):
-                    ss = ss +  np.exp(-0.5*self.MAH_Distance(data[i]-fun(self.sample[j]),cov_like_inv)) 
-                term2 = np.log(ss/self.l)
-                term1 = np.exp(-0.5*self.MAH_Distance(data[i]-fun(self.sample[i]),cov_like_inv))
-                exp_rel = exp_rel + term1 - term2
-            result=exp_rel/self.l
-            self.printInfo('ERE = '+str(result))
-            return result
-        else:
-            self.printErr('State Error')
-class PExp_rel_ent(BaseFuncs):
-    'run parallel function parallelERE.py by passing input functions'
-    def __init__(self,sample_path=None,likeC_path=None,l_in=0,n_in=0):
+    def __init__(self,sample_path=None,likeC_path=None,n_in=0,l_in=0):
         self.state=False
         if sample_path!=None:
             if likeC_path!=None:
@@ -141,16 +94,58 @@ class PExp_rel_ent(BaseFuncs):
         if self.state==True:
             self.sPath=sample_path
             self.lPath=likeC_path
-            self.fPath=""
             self.l=l_in
             self.n=n_in
-    def run(self,coreN):
-        bashCommand="mpirun -np "str(coreN)" python ./parallelERE.py"
-        bashCommand=bashCommand+" "+str(self.sPath)+" "+str(self.lPath)+" "+" "+str(self.l)+" "+str(self.n)
-        import subprocess
-        process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-        output, error = process.communicate()
-        outSTR=str(output)
-        print(outSTR[2:-3])
-        if error!=None:
-            print(error)
+            from Functions import model_function
+            self.mf=model_function()
+    def check_input(self):
+        if len(self.like_cov)>self.n or len(self.like_cov)!=len(self.like_cov[0]):
+            self.printErr('The likelihood_cov matrix should be n by n')
+            self.state=False
+        if self.l>len(self.sample):
+            self.printErr('The number of sample used to estimate expected relative entropy should be smaller than given sample size')
+            self.state=False
+        #print(inspect.getfile(inspect.currentframe()))
+        #print(os.path.basename(__file__))
+        #print(os.path.abspath(__file__))
+    #This function has been used in the code
+    def MAH_Distance(self,x,y):
+        return np.transpose(x)@y@x
+    def jfun(self,i,l,data,cov_like_inv):
+        ss=0
+        fl=float(l)
+        for j in range(l):
+            ss=ss+np.exp(-0.5*self.MAH_Distance(data[i]-self.mf.fun(self.sample[j]),cov_like_inv))
+        term2 = np.log(ss/fl)
+        term1 =  -0.5*self.MAH_Distance(data[i]-self.mf.fun(self.sample[i]),cov_like_inv)
+        return term1-term2
+    def Run(self):
+        if self.state==True:
+            self.printInfo('file importing...')
+            self.printInfo('samples file importing '+self.sPath)
+            self.sample = np.genfromtxt(self.sPath)
+            self.printInfo('like cove file importing '+self.lPath)
+            self.like_cov = np.genfromtxt(self.lPath)
+            self.printInfo('checking input files...')
+            self.check_input()
+
+            from numpy.linalg import inv
+            self.printInfo('Expected Relative Entropy (ERE):')
+            self.printInfo('genertaing data sample...')
+
+            cov_like_inv = inv(self.like_cov)
+            data = np.zeros((self.l,self.n))
+            for i in range(self.l):
+                data[i] = np.random.multivariate_normal(self.mf.fun(self.sample[i]), self.like_cov) 
+            exp_rel = 0
+            for m in range(self.l):
+                exp_rel = exp_rel + self.jfun(m,self.l,data,cov_like_inv)
+            result=(exp_rel/self.l)
+            self.printInfo(result)
+            return result 
+        else:
+            self.printErr('State Error')
+    def PRun(self,coreN):
+        bashCommand="mpiexec -np "+str(coreN)+" python ./parallelERE.py"
+        bashCommand=bashCommand+" "+str(self.n)+" "+str(self.l)+" "+str(self.sPath)+" "+str(self.lPath)
+        os.system(bashCommand)
