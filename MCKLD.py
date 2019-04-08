@@ -129,7 +129,7 @@ class Exp_rel_ent(BaseFuncs):
             self.printErr('State Error')
 class PExp_rel_ent(BaseFuncs):
     'run parallel function parallelERE.py by passing input functions'
-    def __init__(self,sample_path=None,likeC_path=None,l_in=0,n_in=0,):
+    def __init__(self,sample_path=None,likeC_path=None,l_in=0,n_in=0):
         self.state=False
         if sample_path!=None:
             if likeC_path!=None:
