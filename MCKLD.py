@@ -82,7 +82,7 @@ class Rel_ent(BaseFuncs):
             return 0
 class Exp_rel_ent(BaseFuncs):
     'this is expecte_relative_entropy form of the package'
-    def __init__(self,sample_path=None,likeC_path=None,n_in=0,l_in=0):
+    def __init__(self,sample_path=None,likeC_path=None,function_path=None,n_in=0,l_in=0):
         self.state=False
         if sample_path!=None:
             if likeC_path!=None:
@@ -96,7 +96,8 @@ class Exp_rel_ent(BaseFuncs):
             self.lPath=likeC_path
             self.l=l_in
             self.n=n_in
-            from Functions import model_function
+            self.fpath=function_path[:-12]
+            from function_path.Functions import model_function
             self.mf=model_function()
     def check_input(self):
         if len(self.like_cov)>self.n or len(self.like_cov)!=len(self.like_cov[0]):
@@ -105,9 +106,6 @@ class Exp_rel_ent(BaseFuncs):
         if self.l>len(self.sample):
             self.printErr('The number of sample used to estimate expected relative entropy should be smaller than given sample size')
             self.state=False
-        #print(inspect.getfile(inspect.currentframe()))
-        #print(os.path.basename(__file__))
-        #print(os.path.abspath(__file__))
     #This function has been used in the code
     def MAH_Distance(self,x,y):
         return np.transpose(x)@y@x
@@ -147,5 +145,5 @@ class Exp_rel_ent(BaseFuncs):
             self.printErr('State Error')
     def PRun(self,coreN):
         bashCommand="mpiexec -np "+str(coreN)+" python ./parallelERE.py"
-        bashCommand=bashCommand+" "+str(self.n)+" "+str(self.l)+" "+str(self.sPath)+" "+str(self.lPath)
+        bashCommand=bashCommand+" "+str(self.n)+" "+str(self.l)+" "+str(self.sPath)+" "+str(self.lPath)+" "+str(self.function_path)
         os.system(bashCommand)
