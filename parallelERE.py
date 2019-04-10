@@ -13,10 +13,12 @@ s_path = str(sys.argv[3])
 sample=np.genfromtxt(s_path)
 l_path = str(sys.argv[4])
 like_cov=np.genfromtxt(l_path)
+fun_path = str(sys.argv[5])
+mfunction=np.genfromtxt(fun_path)
 ere=0
 ti=0
 
-from GFunction import model_function
+from mfunction.Functions import model_function
 mf=model_function()
 
 #This function has been used in the code
@@ -67,17 +69,11 @@ def expecte_relative_entropy(sample,likelihood_cov,n,l):
      stop_time = time.time()
 
      if rank == 0:
-         #add the rest numbers to 1 000 000
-         #for i in range(a + (size)*perrank, b+1):
-         #    total[0] = total[0] + i
          print ("The res: ", total[0]/fl)
          print ("time spent with ", size, " threads in milliseconds")
          print ("-----", int((time.time()-start_time)*1000), "-----")
          exp_res=total[0]/fl
          print(exp_res)
-         #error=abs(exactV-exp_res)/exactV
-         #file = open(cwd+'/data/data.txt','a')
          ts=int((time.time()-start_time)*1000)
-         #file.write(str(nn)+" "+str(error)+" "+str(ts)+'\n')
          return exp_res
 ere=expecte_relative_entropy(sample,like_cov,nn,ll) 
