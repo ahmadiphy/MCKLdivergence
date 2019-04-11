@@ -146,4 +146,5 @@ class Exp_rel_ent(BaseFuncs):
     def PRun(self,coreN):
         bashCommand="mpiexec -np "+str(coreN)+" python ./parallelERE.py"
         bashCommand=bashCommand+" "+str(self.n)+" "+str(self.l)+" "+str(self.sPath)+" "+str(self.lPath)+" "+str(self.function_path)
-        os.system(bashCommand)
+        result=os.system(bashCommand)
+        return result
