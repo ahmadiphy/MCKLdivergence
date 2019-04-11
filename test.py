@@ -9,7 +9,7 @@ RE=Rel_ent(cwd + '/REdata/chain.out',cwd + '/REdata/chainprob.out',cwd + '/REdat
 re=RE.Run()
 print(re)
 #functions_path=cwd+'/Functions.py'
-#ERE=Exp_rel_ent(cwd+'/D1_sample.txt',cwd+'/C.txt',cwd+'/Functions.py',10,300)
+#ERE=Exp_rel_ent(cwd+'/EREdata/D1_sample.txt',cwd+'/EREdata/C.txt',cwd+'/Functions.py',10,300)
 #ere=ERE.Run()
 #print(ere)
 #pere=ERE.PRun(2)
