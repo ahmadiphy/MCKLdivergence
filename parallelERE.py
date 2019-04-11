@@ -78,4 +78,4 @@ def expecte_relative_entropy(sample,likelihood_cov,n,l):
          return exp_res
 ere=expecte_relative_entropy(sample,like_cov,nn,ll) 
 if rank==0:
-     sys.exit(ere)
+     print(ere)
