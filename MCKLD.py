@@ -19,7 +19,7 @@ except:
     __check_mce_installed__=False
     
 import numpy as np
-import inspect, os
+import inspect, os, sys
 
 
 class BaseFuncs:
@@ -97,7 +97,8 @@ class Exp_rel_ent(BaseFuncs):
             self.l=l_in
             self.n=n_in
             self.fpath=function_path[:-12]
-            from function_path.Functions import model_function
+            sys.path.append(self.fpath)
+            from Functions import model_function
             self.mf=model_function()
     def check_input(self):
         if len(self.like_cov)>self.n or len(self.like_cov)!=len(self.like_cov[0]):
@@ -145,6 +146,9 @@ class Exp_rel_ent(BaseFuncs):
             self.printErr('State Error')
     def PRun(self,coreN):
         bashCommand="mpiexec -np "+str(coreN)+" python ./parallelERE.py"
-        bashCommand=bashCommand+" "+str(self.n)+" "+str(self.l)+" "+str(self.sPath)+" "+str(self.lPath)+" "+str(self.function_path)
-        result=os.system(bashCommand)
-        return result
+        bashCommand=bashCommand+" "+str(self.n)+" "+str(self.l)+" "+str(self.sPath)+" "+str(self.lPath)+" "+str(self.fpath)
+        os.system(bashCommand)
+        CF=self.fpath+'cash.txt'
+        result=np.genfromtxt(CF)
+        os.remove(CF)
+        return float(result)
