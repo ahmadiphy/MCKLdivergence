@@ -55,8 +55,6 @@ class Rel_ent(BaseFuncs):
             else:
             	lnp=-1*chain[:,1]
             self.printInfo("All data loaded.")
-            #self.printInfo('Building the chain...')
-            #self.chain=np.c_[weight,-lnp,theta]
             self.lnlike = lnp - lnprior
     def printRes(self,resVec):
         for k in range(len(resVec)):
