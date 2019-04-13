@@ -30,36 +30,33 @@ class BaseFuncs:
         
 class Rel_ent(BaseFuncs):
     'this is mylass form of the package'
-    def __init__(self,chain_path=None,lnp_path=None,lnprior_path=None,weight_path=None):
+    def __init__(self,chain_path=None,lnprior_path=None,dataCoverWeight=True):
         self.state=False
         if chain_path!=None:
-            if lnp_path!=None:
-                if lnprior_path!=None:
-                    self.state=True
-                else:
-                    self.printErr('Problem in loading lnprior')
+            if lnprior_path!=None:
+                self.state=True
             else:
-                self.printErr('Problem in loading lnp')
+                self.printErr('Problem in loading lnprior')
         else:
             self.printErr('Problem in loading chain!')
         
         if self.state==True:
             self.printInfo('Loading chain from {}'.format(chain_path))
-            theta = np.genfromtxt(chain_path)
-            self.printInfo('Loading lnp from {}'.format(lnp_path))
-            lnp = np.genfromtxt(lnp_path)
+            self.chain = np.genfromtxt(chain_path)
+            lnp = 
             self.printInfo('Loading lnprior from {}'.format(lnprior_path))
             lnprior = np.genfromtxt(lnprior_path)
-            if weight_path!=None:
-                self.printInfo('Loading weight from {}'.format(weight_path))
-                weight = np.genfromtxt(weight_path)
-            else:
-                self.printInfo('Weights had not given. So, it is a vector of ones with size of len(lnp).')
+            if dataCoverWeight==False:
+            	lnp=-1*chain[:,0]
+                self.printInfo('Weights had not given. So, it is a vector of ones with size of chain.')
                 self.printInfo('Generating the weights...')
                 weight=np.ones(len(theta))
+                self.chain=np.c_[weight,chain]
+            else:
+            	lnp=-1*chain[:,1]
             self.printInfo("All data loaded.")
-            self.printInfo('Building the chain...')
-            self.chain=np.c_[weight,-lnp,theta]
+            #self.printInfo('Building the chain...')
+            #self.chain=np.c_[weight,-lnp,theta]
             self.lnlike = lnp - lnprior
     def printRes(self,resVec):
         for k in range(len(resVec)):
@@ -82,7 +79,7 @@ class Rel_ent(BaseFuncs):
             return 0
 class Exp_rel_ent(BaseFuncs):
     'this is expecte_relative_entropy form of the package'
-    def __init__(self,sample_path=None,likeC_path=None,function_path=None,n_in=0,l_in=0):
+    def __init__(self,sample_path=None,likeC_path=None,function_path=None,n_in=0):
         self.state=False
         if sample_path!=None:
             if likeC_path!=None:
@@ -94,7 +91,6 @@ class Exp_rel_ent(BaseFuncs):
         if self.state==True:
             self.sPath=sample_path
             self.lPath=likeC_path
-            self.l=l_in
             self.n=n_in
             self.fpath=function_path[:-12]
             sys.path.append(self.fpath)
@@ -118,7 +114,11 @@ class Exp_rel_ent(BaseFuncs):
         term2 = np.log(ss/fl)
         term1 =  -0.5*self.MAH_Distance(data[i]-self.mf.fun(self.sample[i]),cov_like_inv)
         return term1-term2
-    def Run(self):
+    def Run(self,l_in=0):
+    	self.l=l_in
+    	if self.l_in==0:
+    		#ERRoR
+    		self.state=False
         if self.state==True:
             self.printInfo('file importing...')
             self.printInfo('samples file importing '+self.sPath)
@@ -144,11 +144,18 @@ class Exp_rel_ent(BaseFuncs):
             return result 
         else:
             self.printErr('State Error')
-    def PRun(self,coreN):
-        bashCommand="mpiexec -np "+str(coreN)+" python ./parallelERE.py"
-        bashCommand=bashCommand+" "+str(self.n)+" "+str(self.l)+" "+str(self.sPath)+" "+str(self.lPath)+" "+str(self.fpath)
-        os.system(bashCommand)
-        CF=self.fpath+'cash.txt'
-        result=np.genfromtxt(CF)
-        os.remove(CF)
-        return float(result)
+    def PRun(self,l_in=0,coreN):
+    	self.l=l_in
+    	if self.l==0:
+    		#ERROR
+    		self.state=False
+    	else:
+    		self.check_input()
+    	if self.state==True:
+        	bashCommand="mpiexec -np "+str(coreN)+" python ./parallelERE.py"
+        	bashCommand=bashCommand+" "+str(self.n)+" "+str(self.l)+" "+str(self.sPath)+" "+str(self.lPath)+" "+str(self.fpath)
+        	os.system(bashCommand)
+        	CF=self.fpath+'cash.txt'
+        	result=np.genfromtxt(CF)
+        	os.remove(CF)
+        	return float(result)
