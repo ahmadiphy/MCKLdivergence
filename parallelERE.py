@@ -60,26 +60,17 @@ def expecte_relative_entropy(sample,likelihood_cov,n,l):
          total = None
 
      comm.Barrier()
-     #collect the partial results and add to the total sum
      comm.Reduce(summ, total, op=MPI.SUM, root=0)
 
      stop_time = time.time()
 
      if rank == 0:
-         #add the rest numbers to 1 000 000
-         #for i in range(a + (size)*perrank, b+1):
-         #    total[0] = total[0] + i
-         #print ("The res: ", total[0]/fl)
          print ("time spent with ", size, " threads in milliseconds")
          print ("-----", int((time.time()-start_time)*1000), "-----")
          exp_res=total[0]/fl
-         #error=abs(exactV-exp_res)/exactV
-         #file = open(cwd+'/data/data.txt','a')
          ts=int((time.time()-start_time)*1000)
-         #file.write(str(nn)+" "+str(error)+" "+str(ts)+'\n')
          CF=str(fpath)+'cash.txt'
          file = open(CF,'a')
          file.write(str(exp_res))
-         #os.path.isfile(CF)
          return exp_res
 ere=expecte_relative_entropy(sample,like_cov,nn,ll)
