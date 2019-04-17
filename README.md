@@ -1,2 +1,11 @@
 # MCKLdivergence
-A method for computing the information gains after updating prior to posterior using an MCMC chain.
+A python package to estimate the relative entropy between the prior and posterior from an MCMC chain.
+The code also estimates the expected relative entropy from the likelihood and a sample of prior.
+For more detiales see ......
+
+Installations:
+
+
+
+
+Example:
