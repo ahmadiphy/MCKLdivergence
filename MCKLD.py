@@ -5,7 +5,7 @@
 
 __authors__ = "Ahmad Mehrabi & Abolfazl Ahmadi Rahmat"
 __license__ = "MIT"
-__version_info__ = ('8','April','2019')
+__version_info__ = ('18','April','2019')
 __version__ = '-'.join(__version_info__)
 __status__ = "Development"
 
@@ -43,17 +43,17 @@ class Rel_ent(BaseFuncs):
         if self.state==True:
             self.printInfo('Loading chain from {}'.format(chain_path))
             self.chain = np.genfromtxt(chain_path)
-            lnp = 
             self.printInfo('Loading lnprior from {}'.format(lnprior_path))
             lnprior = np.genfromtxt(lnprior_path)
             if dataCoverWeight==False:
-            	lnp=-1*chain[:,0]
-                self.printInfo('Weights had not given. So, it is a vector of ones with size of chain.')
-                self.printInfo('Generating the weights...')
-                weight=np.ones(len(theta))
-                self.chain=np.c_[weight,chain]
+            	lnp=-1*self.chain[:,0]
+            	self.printInfo("Weights had not given. So, it is a vector of ones with size of chain.")
+            	self.printInfo('Generating the weights...')
+            	weight=np.ones(len(self.chain))
+            	self.chain=np.c_[weight,self.chain]
             else:
-            	lnp=-1*chain[:,1]
+            	lnp=-1*self.chain[:,1]
+            	#self.chain=chain
             self.printInfo("All data loaded.")
             self.lnlike = lnp - lnprior
     def printRes(self,resVec):
@@ -92,6 +92,7 @@ class Exp_rel_ent(BaseFuncs):
             self.n=n_in
             self.fpath=function_path[:-12]
             sys.path.append(self.fpath)
+            print(self.fpath)
             from Functions import model_function
             self.mf=model_function()
     def check_input(self):
@@ -114,35 +115,35 @@ class Exp_rel_ent(BaseFuncs):
         return term1-term2
     def Run(self,l_in=0):
     	self.l=l_in
-    	if self.l_in==0:
+    	if self.l==0:
     		#ERRoR
     		self.state=False
-        if self.state==True:
-            self.printInfo('file importing...')
-            self.printInfo('samples file importing '+self.sPath)
-            self.sample = np.genfromtxt(self.sPath)
-            self.printInfo('like cove file importing '+self.lPath)
-            self.like_cov = np.genfromtxt(self.lPath)
-            self.printInfo('checking input files...')
-            self.check_input()
+    	if self.state==True:
+    		self.printInfo('file importing...')
+    		self.printInfo('samples file importing '+self.sPath)
+    		self.sample = np.genfromtxt(self.sPath)
+    		self.printInfo('like cove file importing '+self.lPath)
+    		self.like_cov = np.genfromtxt(self.lPath)
+    		self.printInfo('checking input files...')
+    		self.check_input()
 
-            from numpy.linalg import inv
-            self.printInfo('Expected Relative Entropy (ERE):')
-            self.printInfo('genertaing data sample...')
+    		from numpy.linalg import inv
+    		self.printInfo('Expected Relative Entropy (ERE):')
+    		self.printInfo('genertaing data sample...')
 
-            cov_like_inv = inv(self.like_cov)
-            data = np.zeros((self.l,self.n))
-            for i in range(self.l):
-                data[i] = np.random.multivariate_normal(self.mf.fun(self.sample[i]), self.like_cov) 
-            exp_rel = 0
-            for m in range(self.l):
-                exp_rel = exp_rel + self.jfun(m,self.l,data,cov_like_inv)
-            result=(exp_rel/self.l)
-            self.printInfo(result)
-            return result 
-        else:
-            self.printErr('State Error')
-    def PRun(self,l_in=0,coreN):
+    		cov_like_inv = inv(self.like_cov)
+    		data = np.zeros((self.l,self.n))
+    		for i in range(self.l):
+    			data[i] = np.random.multivariate_normal(self.mf.fun(self.sample[i]), self.like_cov) 
+    		exp_rel = 0
+    		for m in range(self.l):
+    			exp_rel = exp_rel + self.jfun(m,self.l,data,cov_like_inv)
+    		result=(exp_rel/self.l)
+    		self.printInfo(result)
+    		return result 
+    	else:
+    		self.printErr('State Error')
+    def PRun(self,l_in=0,coreN=1):
     	self.l=l_in
     	if self.l==0:
     		#ERROR
