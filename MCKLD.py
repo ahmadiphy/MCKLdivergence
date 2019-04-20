@@ -35,7 +35,7 @@ class BaseFuncs:
     	sys.stdout = sys.__stdout__
         
 class Rel_ent(BaseFuncs):
-    'this is Rel_ent form of the package'
+    'this is mylass form of the package'
     def __init__(self,chain_path=None,lnprior_path=None,dataCoverWeight=True,inThinlen=4.0,inBurnlen=0.):
         self.state=False
         if chain_path!=None:
@@ -54,20 +54,17 @@ class Rel_ent(BaseFuncs):
             self.printInfo('Loading lnprior from {}'.format(lnprior_path))
             lnprior = np.genfromtxt(lnprior_path)
             self.Blen=int(self.Burnlen*len(lnprior))
-            lnprior=lnprior[self.Blen:]
             if dataCoverWeight==False:
                 lnp=self.chain[:,0]
-                lnp=lnp[self.Blen:]
                 self.printInfo("Weights had not given. So, it is a vector of ones with size of chain.")
                 self.printInfo('Generating the weights...')
                 weight=np.ones(len(self.chain))
                 self.chain=np.c_[weight,self.chain]
             else:
                 lnp=self.chain[:,1]
-                lnp=lnp[self.Blen:]
-            	#self.chain=chain
             self.printInfo("All data loaded.")
             self.lnlike = lnp - lnprior
+            self.lnlike=self.lnlike[self.Blen:]
     def printRes(self,resVec):
         for k in range(len(resVec)):
             print('D[k={}] = {}'.format(k+1,resVec[k]))
