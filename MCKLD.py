@@ -35,7 +35,7 @@ class BaseFuncs:
     	sys.stdout = sys.__stdout__
         
 class Rel_ent(BaseFuncs):
-    'this is mylass form of the package'
+    'this is Rel_ent form of the package'
     def __init__(self,chain_path=None,lnprior_path=None,dataCoverWeight=True,inThinlen=4.0,inBurnlen=0.):
         self.state=False
         if chain_path!=None:
