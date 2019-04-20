@@ -5,17 +5,17 @@
 
 __authors__ = "Ahmad Mehrabi & Abolfazl Ahmadi Rahmat"
 __license__ = "MIT"
-__version_info__ = ('18','April','2019')
+__version_info__ = ('20','April','2019')
 __version__ = '-'.join(__version_info__)
 __status__ = "Development"
 
 
-__check_mce_installed__=0
+__check_mce_installed__=False
 try:
     from MCEvidence import MCEvidence
     __check_mce_installed__=True
 except:
-    print("Dependency ERROR! 'MCEvidence not found!'")
+    print("Dependency ERROR! 'MCEvidence not found!")
     __check_mce_installed__=False
     
 import numpy as np
@@ -27,10 +27,16 @@ class BaseFuncs:
         print("ERROR!:{}".format(info))
     def printInfo(self,info):
         print("INFO:{}".format(info))
+        # Disable
+    def blockPrint(self):
+    	sys.stdout = open(os.devnull, 'w')
+    # Restore
+    def enablePrint(self):
+    	sys.stdout = sys.__stdout__
         
 class Rel_ent(BaseFuncs):
     'this is mylass form of the package'
-    def __init__(self,chain_path=None,lnprior_path=None,dataCoverWeight=True):
+    def __init__(self,chain_path=None,lnprior_path=None,dataCoverWeight=True,inThinlen=4.0,inBurnlen=0.):
         self.state=False
         if chain_path!=None:
             if lnprior_path!=None:
@@ -41,18 +47,24 @@ class Rel_ent(BaseFuncs):
             self.printErr('Problem in loading chain!')
         
         if self.state==True:
+            self.Thinlen=inThinlen
+            self.Burnlen=inBurnlen
             self.printInfo('Loading chain from {}'.format(chain_path))
             self.chain = np.genfromtxt(chain_path)
             self.printInfo('Loading lnprior from {}'.format(lnprior_path))
             lnprior = np.genfromtxt(lnprior_path)
+            self.Blen=int(self.Burnlen*len(lnprior))
+            lnprior=lnprior[self.Blen:]
             if dataCoverWeight==False:
-            	lnp=-1*self.chain[:,0]
-            	self.printInfo("Weights had not given. So, it is a vector of ones with size of chain.")
-            	self.printInfo('Generating the weights...')
-            	weight=np.ones(len(self.chain))
-            	self.chain=np.c_[weight,self.chain]
+                lnp=self.chain[:,0]
+                lnp=lnp[self.Blen:]
+                self.printInfo("Weights had not given. So, it is a vector of ones with size of chain.")
+                self.printInfo('Generating the weights...')
+                weight=np.ones(len(self.chain))
+                self.chain=np.c_[weight,self.chain]
             else:
-            	lnp=-1*self.chain[:,1]
+                lnp=self.chain[:,1]
+                lnp=lnp[self.Blen:]
             	#self.chain=chain
             self.printInfo("All data loaded.")
             self.lnlike = lnp - lnprior
@@ -60,15 +72,17 @@ class Rel_ent(BaseFuncs):
         for k in range(len(resVec)):
             print('D[k={}] = {}'.format(k+1,resVec[k]))
     def myResult(self,avgL,mce):
-        result=np.zeros(4)
+        result=np.zeros(len(mce))
         result=-1*mce+avgL
         return result
     def Run(self):
         if self.state==True:
             self.printInfo("Calculatong MCEvidence...")
-            mce=MCEvidence([self.chain],ischain=True).evidence()
+            
+            mce=MCEvidence([self.chain],ischain=True,thinlen=self.Thinlen,burnlen=self.Burnlen).evidence(pos_lnp=True)
             avgL=np.mean(self.lnlike)
             Gresult=self.myResult(avgL,mce)
+            
             self.printInfo("Results are :")
             self.printRes(Gresult)
             return Gresult
