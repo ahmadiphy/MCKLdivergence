@@ -14,22 +14,27 @@ like_cov=np.genfromtxt(l_path)
 fpath= str(sys.argv[5])
 ere=0
 ti=0
+state=True
+
+if ll>len(sample):
+    print('The number of sample used to estimate expected relative entropy should be smaller than given sample size')
+    state=False
 
 from Functions import model_function
 mf=model_function()
 
 #This function has been used in the code
 def MAH_Distance(x,y):
-     return np.transpose(x)@y@x
+    return np.transpose(x)@y@x
 
 def jfun(i,l,data,sample,cov_like_inv):
-     ss=0
-     fl=float(l)
-     for j in range(l):
-          ss=ss+np.exp(-0.5*MAH_Distance(data[i]-mf.fun(sample[j]),cov_like_inv))
-     term2 = np.log(ss/fl)
-     term1 = -0.5*MAH_Distance(data[i]-mf.fun(sample[i]),cov_like_inv)
-     return term1-term2
+    ss=0
+    fl=float(l)
+    for j in range(l):
+        ss=ss+np.exp(-0.5*MAH_Distance(data[i]-mf.fun(sample[j]),cov_like_inv))
+    term2 = np.log(ss/fl)
+    term1 = -0.5*MAH_Distance(data[i]-mf.fun(sample[i]),cov_like_inv)
+    return term1-term2
 
 def expecte_relative_entropy(sample,likelihood_cov,n,l):
      #genertaing data sample
@@ -73,4 +78,5 @@ def expecte_relative_entropy(sample,likelihood_cov,n,l):
          file = open(CF,'a')
          file.write(str(exp_res))
          return exp_res
-ere=expecte_relative_entropy(sample,like_cov,nn,ll)
+if state==True:
+    ere=expecte_relative_entropy(sample,like_cov,nn,ll)
