@@ -5,7 +5,7 @@
 
 __authors__ = "Ahmad Mehrabi & Abolfazl Ahmadi Rahmat"
 __license__ = "MIT"
-__version_info__ = ('20','April','2019')
+__version_info__ = ('21','April','2019')
 __version__ = '-'.join(__version_info__)
 __status__ = "Development"
 
@@ -36,7 +36,7 @@ class BaseFuncs:
         
 class Rel_ent(BaseFuncs):
     'this is mylass form of the package'
-    def __init__(self,chain_path=None,lnprior_path=None,inThinlen=0.,inBurnlen=0.):
+    def __init__(self,chain_path=None,lnprior_path=None,dataCoverWeight=True,inThinlen=4.0,inBurnlen=0.):
         self.state=False
         if chain_path!=None:
             if lnprior_path!=None:
@@ -54,6 +54,14 @@ class Rel_ent(BaseFuncs):
             self.printInfo('Loading lnprior from {}'.format(lnprior_path))
             lnprior = np.genfromtxt(lnprior_path)
             self.Blen=int(self.Burnlen*len(lnprior))
+            if dataCoverWeight==False:
+                lnp=self.chain[:,0]
+                self.printInfo("Weights had not given. So, it is a vector of ones with size of chain.")
+                self.printInfo('Generating the weights...')
+                weight=np.ones(len(self.chain))
+                self.chain=np.c_[weight,self.chain]
+            else:
+                lnp=self.chain[:,1]
             self.printInfo("All data loaded.")
             self.lnlike = lnp - lnprior
             self.lnlike=self.lnlike[self.Blen:]
@@ -80,18 +88,18 @@ class Rel_ent(BaseFuncs):
             return 0
 class Exp_rel_ent(BaseFuncs):
     'this is expecte_relative_entropy form of the package'
-    def __init__(self,sample_path=None,likeC_path=None,function_path=None,n_in=0):
+    def __init__(self,sample_path=None,function_path=None,lcm=np.zeros(1),n_in=0):
         self.state=False
         if sample_path!=None:
-            if likeC_path!=None:
+            if len(lcm)!=1:
                 self.state=True
             else:
-                self.printErr('input file likeC_path error')
+                self.printErr('input error, Like Cov Matrix!')
         else:
-            self.printErr('input file sample_path error')
+            self.printErr('import error, sample path dose not exist!')
         if self.state==True:
             self.sPath=sample_path
-            self.lPath=likeC_path
+            self.Like_Cov_Matrix=lcm
             self.n=n_in
             self.fpath=function_path[:-12]
             sys.path.append(self.fpath)
@@ -99,11 +107,8 @@ class Exp_rel_ent(BaseFuncs):
             from Functions import model_function
             self.mf=model_function()
     def check_input(self):
-        if len(self.like_cov)>self.n or len(self.like_cov)!=len(self.like_cov[0]):
-            self.printErr('The likelihood_cov matrix should be n by n')
-            self.state=False
-        if self.l>len(self.sample):
-            self.printErr('The number of sample used to estimate expected relative entropy should be smaller than given sample size')
+        if len(self.Like_Cov_Matrix)>self.n or len(self.Like_Cov_Matrix)!=len(self.Like_Cov_Matrix[0]):
+            self.printErr('The likelihood_cov matrix should be n*n')
             self.state=False
     #This function has been used in the code
     def MAH_Distance(self,x,y):
@@ -117,35 +122,35 @@ class Exp_rel_ent(BaseFuncs):
         term1 =  -0.5*self.MAH_Distance(data[i]-self.mf.fun(self.sample[i]),cov_like_inv)
         return term1-term2
     def Run(self,l_in=0):
-    	self.l=l_in
-    	if self.l==0:
+        self.l=l_in
+        if self.l==0:
     		#ERRoR
-    		self.state=False
-    	if self.state==True:
-    		self.printInfo('file importing...')
-    		self.printInfo('samples file importing '+self.sPath)
-    		self.sample = np.genfromtxt(self.sPath)
-    		self.printInfo('like cove file importing '+self.lPath)
-    		self.like_cov = np.genfromtxt(self.lPath)
-    		self.printInfo('checking input files...')
-    		self.check_input()
-
-    		from numpy.linalg import inv
-    		self.printInfo('Expected Relative Entropy (ERE):')
-    		self.printInfo('genertaing data sample...')
-
-    		cov_like_inv = inv(self.like_cov)
-    		data = np.zeros((self.l,self.n))
-    		for i in range(self.l):
-    			data[i] = np.random.multivariate_normal(self.mf.fun(self.sample[i]), self.like_cov) 
-    		exp_rel = 0
-    		for m in range(self.l):
-    			exp_rel = exp_rel + self.jfun(m,self.l,data,cov_like_inv)
-    		result=(exp_rel/self.l)
-    		self.printInfo(result)
-    		return result 
-    	else:
-    		self.printErr('State Error')
+            self.state=False
+        if self.state==True:
+            self.printInfo('file importing...')
+            self.printInfo('samples file importing '+self.sPath)
+            self.sample = np.genfromtxt(self.sPath)
+            self.printInfo('checking input files...')
+            self.check_input()
+            if self.l>len(self.sample):
+                self.printErr('The number of sample used to estimate expected relative entropy should be smaller than given sample size')
+                self.state=False
+            if self.state==True:
+                from numpy.linalg import inv
+                self.printInfo('Expected Relative Entropy (ERE):')
+                self.printInfo('genertaing data sample...')
+                cov_like_inv = inv(self.Like_Cov_Matrix)
+                data = np.zeros((self.l,self.n))
+                for i in range(self.l):
+                    data[i] = np.random.multivariate_normal(self.mf.fun(self.sample[i]), self.Like_Cov_Matrix) 
+                exp_rel = 0
+                for m in range(self.l):
+                    exp_rel = exp_rel + self.jfun(m,self.l,data,cov_like_inv)
+                result=(exp_rel/self.l)
+                self.printInfo(result)
+                return result 
+        else:
+            self.printErr('State Error')
     def PRun(self,l_in=0,coreN=1):
     	self.l=l_in
     	if self.l==0:
@@ -154,10 +159,13 @@ class Exp_rel_ent(BaseFuncs):
     	else:
     		self.check_input()
     	if self.state==True:
-        	bashCommand="mpiexec -np "+str(coreN)+" python ./parallelERE.py"
-        	bashCommand=bashCommand+" "+str(self.n)+" "+str(self.l)+" "+str(self.sPath)+" "+str(self.lPath)+" "+str(self.fpath)
-        	os.system(bashCommand)
-        	CF=self.fpath+'cash.txt'
-        	result=np.genfromtxt(CF)
-        	os.remove(CF)
-        	return float(result)
+            lPath=self.fpath+'cov.txt'
+            np.savetxt(lPath, self.Like_Cov_Matrix)
+            bashCommand="mpiexec -np "+str(coreN)+" python ./parallelERE.py"
+            bashCommand=bashCommand+" "+str(self.n)+" "+str(self.l)+" "+str(self.sPath)+" "+str(lPath)+" "+str(self.fpath)
+            os.system(bashCommand)
+            CF=self.fpath+'cash.txt'
+            result=np.genfromtxt(CF)
+            os.remove(CF)
+            os.remove(lPath)
+            return float(result)
