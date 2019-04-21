@@ -8,7 +8,7 @@ from MCKLD import Rel_ent,Exp_rel_ent
 
 tf1 = tarfile.open(cwd+'REdata.tar.xz')
 tf1.extractall()
-RE=Rel_ent(cwd + '/REdata/chain.out',cwd + '/REdata/lnprior.out',False,4.0,0.01)
+RE=Rel_ent(cwd + '/REdata/chain.out',cwd + '/REdata/lnprior.out',4.0,0.01)
 re=RE.Run()
 print(re)
 
