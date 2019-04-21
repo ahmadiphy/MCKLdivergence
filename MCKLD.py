@@ -36,7 +36,7 @@ class BaseFuncs:
         
 class Rel_ent(BaseFuncs):
     'this is mylass form of the package'
-    def __init__(self,chain_path=None,lnprior_path=None,dataCoverWeight=True,inThinlen=4.0,inBurnlen=0.):
+    def __init__(self,chain_path=None,lnprior_path=None,inThinlen=0.,inBurnlen=0.):
         self.state=False
         if chain_path!=None:
             if lnprior_path!=None:
@@ -54,14 +54,6 @@ class Rel_ent(BaseFuncs):
             self.printInfo('Loading lnprior from {}'.format(lnprior_path))
             lnprior = np.genfromtxt(lnprior_path)
             self.Blen=int(self.Burnlen*len(lnprior))
-            if dataCoverWeight==False:
-                lnp=self.chain[:,0]
-                self.printInfo("Weights had not given. So, it is a vector of ones with size of chain.")
-                self.printInfo('Generating the weights...')
-                weight=np.ones(len(self.chain))
-                self.chain=np.c_[weight,self.chain]
-            else:
-                lnp=self.chain[:,1]
             self.printInfo("All data loaded.")
             self.lnlike = lnp - lnprior
             self.lnlike=self.lnlike[self.Blen:]
