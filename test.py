@@ -16,8 +16,13 @@ print(re)
 tf2 = tarfile.open(cwd+'EREdata.tar.xz')
 tf2.extractall()
 functions_path=cwd+'/Functions.py'
-ERE=Exp_rel_ent(cwd+'/EREdata/D1_sample.txt',cwd+'/EREdata/C.txt',cwd+'/Functions.py',10)
+cov_Matrix=np.genfromtxt(cwd+'/EREdata/C.txt')
+ERE=Exp_rel_ent(cwd+'/EREdata/D1_sample.txt',cwd+'/Functions.py',cov_Matrix,10)
 ere=ERE.Run(300)
 print('ere is:')
 print(ere)
-#pere=ERE.PRun(2,300)
+
+print('parallel calculation of:')
+pere=ERE.PRun(300,2)#numper of parallel cores=2
+print('ere is:')
+print(pere)
