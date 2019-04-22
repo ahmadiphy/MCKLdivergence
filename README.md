@@ -8,7 +8,7 @@ The code is written for Python 3.x in linux machin.
 ### Installations:
 + First, make sure that [MCEvidence](https://github.com/yabebalFantaye/MCEvidence) is installed.
 + Then in a terminal inside this directory, run 
-$ python setup.py
+     $ python setup.py
 
 
 
