@@ -5,9 +5,9 @@ For more detiales see ......
 
 The code is written for Python 3.x in linux machin.
 
-Installations:
+### Installations:
 
 
 
 
-Example:
+### Example:
