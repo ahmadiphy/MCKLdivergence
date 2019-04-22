@@ -6,7 +6,8 @@ For more detiales see ......
 The code is written for Python 3.x in linux machin.
 
 ### Installations:
-
+<br>
+* First make sure that [MCEvidence](https://github.com/yabebalFantaye/MCEvidence) is installed.
 
 
 
