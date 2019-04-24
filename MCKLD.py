@@ -5,7 +5,7 @@
 
 __authors__ = "Ahmad Mehrabi & Abolfazl Ahmadi Rahmat"
 __license__ = "MIT"
-__version_info__ = ('20','April','2019')
+__version_info__ = ('25','April','2019')
 __version__ = '-'.join(__version_info__)
 __status__ = "Development"
 
@@ -29,10 +29,10 @@ class BaseFuncs:
         print("INFO:{}".format(info))
         # Disable
     def blockPrint(self):
-    	sys.stdout = open(os.devnull, 'w')
+        sys.stdout = open(os.devnull, 'w')
     # Restore
     def enablePrint(self):
-    	sys.stdout = sys.__stdout__
+        sys.stdout = sys.__stdout__
         
 class Rel_ent(BaseFuncs):
     'this is mylass form of the package'
@@ -117,7 +117,7 @@ class Exp_rel_ent(BaseFuncs):
     def Run(self,l_in=0):
         self.l=l_in
         if self.l==0:
-    		#ERRoR
+            #ERRoR
             self.state=False
         if self.state==True:
             self.printInfo('file importing...')
@@ -145,26 +145,27 @@ class Exp_rel_ent(BaseFuncs):
         else:
             self.printErr('State Error')
     def PRun(self,l_in=0,coreN=1):
-    	self.l=l_in
-    	if self.l==0:
-    		#ERROR
-    		self.printErr("data length is zero")
-    		self.state=False
-    	else:
-    		self.check_input()
-    	import multiprocessing
-    	cn=multiprocessing.cpu_count()
-    	if coreN>cn:
-    		self.printErr(
-    			"number of threads for this machine cannot be larger than "+
-    			str(cn)+
-    			" (number of cores of this machine)!"
-    			)
-    		self.state=False
-    	if self.state==True:
-            lPath=self.fpath+'cov.txt'
+        self.l=l_in
+        if self.l==0:
+            #ERROR
+            self.printErr("data length is zero")
+            self.state=False
+        else:
+            self.check_input()
+        import multiprocessing
+        cn=multiprocessing.cpu_count()
+        if coreN>cn:
+            self.printErr(
+                "number of threads for this machine cannot be larger than "+
+                str(cn)+
+                " (number of cores of this machine)!"
+                )
+            self.state=False
+        if self.state==True:
+            lPath=self.fpath+'cash_0000_cov.txt'
             np.savetxt(lPath, self.Like_Cov_Matrix)
-            bashCommand="mpiexec -np "+str(coreN)+" python ./parallelERE.py"
+            my_path =str(__file__)
+            bashCommand="mpiexec -np "+str(coreN)+" python "+my_path[:-3]+"_parallelERE.py"
             bashCommand=bashCommand+" "+str(self.n)+" "+str(self.l)+" "+str(self.sPath)+" "+str(lPath)+" "+str(self.fpath)
             os.system(bashCommand)
             CF=self.fpath+'cash.txt'
