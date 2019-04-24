@@ -16,8 +16,8 @@ To install this package into your linux machine with pip, do the following:
      $ pip install -e .
      ```
 To install this package directly with pip without clonning:
-
      ```
+     
      $ pip install -e git+https://github.com/ahmadiphy/MCKLdivergence
      ```
 
