@@ -5,7 +5,7 @@
 
 __authors__ = "Ahmad Mehrabi & Abolfazl Ahmadi Rahmat"
 __license__ = "MIT"
-__version_info__ = ('21','April','2019')
+__version_info__ = ('20','April','2019')
 __version__ = '-'.join(__version_info__)
 __status__ = "Development"
 
@@ -36,7 +36,7 @@ class BaseFuncs:
         
 class Rel_ent(BaseFuncs):
     'this is mylass form of the package'
-    def __init__(self,chain_path=None,lnprior_path=None,dataCoverWeight=True,inThinlen=4.0,inBurnlen=0.):
+    def __init__(self,chain_path=None,lnprior_path=None,inThinlen=0.0,inBurnlen=0.0):
         self.state=False
         if chain_path!=None:
             if lnprior_path!=None:
@@ -54,14 +54,7 @@ class Rel_ent(BaseFuncs):
             self.printInfo('Loading lnprior from {}'.format(lnprior_path))
             lnprior = np.genfromtxt(lnprior_path)
             self.Blen=int(self.Burnlen*len(lnprior))
-            if dataCoverWeight==False:
-                lnp=self.chain[:,0]
-                self.printInfo("Weights had not given. So, it is a vector of ones with size of chain.")
-                self.printInfo('Generating the weights...')
-                weight=np.ones(len(self.chain))
-                self.chain=np.c_[weight,self.chain]
-            else:
-                lnp=self.chain[:,1]
+            lnp=self.chain[:,1]
             self.printInfo("All data loaded.")
             self.lnlike = lnp - lnprior
             self.lnlike=self.lnlike[self.Blen:]
@@ -155,9 +148,19 @@ class Exp_rel_ent(BaseFuncs):
     	self.l=l_in
     	if self.l==0:
     		#ERROR
+    		self.printErr("data length is zero")
     		self.state=False
     	else:
     		self.check_input()
+    	import multiprocessing
+    	cn=multiprocessing.cpu_count()
+    	if coreN>cn:
+    		self.printErr(
+    			"number of threads for this machine cannot be larger than "+
+    			str(cn)+
+    			" (number of cores of this machine)!"
+    			)
+    		self.state=False
     	if self.state==True:
             lPath=self.fpath+'cov.txt'
             np.savetxt(lPath, self.Like_Cov_Matrix)
