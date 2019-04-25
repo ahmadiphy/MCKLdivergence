@@ -20,6 +20,7 @@ if ll>len(sample):
     print('The number of sample used to estimate expected relative entropy should be smaller than given sample size')
     state=False
 
+sys.path.append(fpath)
 from Functions import model_function
 mf=model_function()
 
