@@ -2,8 +2,8 @@
 
 Assume a simple model function as:
 <br>
-$(a_{n}x^{n}+a_{n-1}x^{n-1}+...+a_{0}) \times (b_{m}x^{m}+b_{m-1}x^{m-1}+...+b_{0})=?$
- $ F(\Theta) = M\Theta $ 
+ $$ F(\Theta) = M\Theta $$ 
+<br>
 
 where $$M=X^j(x_i)$$ and $$X(x)$$s are some arbitrary base functions.  
 In this example we assume $X(x) = [1,x,x^2]$ base functions for a 3D problem.  
