@@ -1,6 +1,7 @@
 # LINEAR GAUSSIAN MODEL
 
 Assume a simple model function as:
+
 $$ F(\Theta) = M\Theta $$
 where $$M=X^j(x_i)$$ and $$X(x)$$s are some arbitrary base functions.  
 In this example we assume $X(x) = [1,x,x^2]$ base functions for a 3D problem.  
