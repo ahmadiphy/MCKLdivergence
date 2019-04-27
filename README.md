@@ -8,8 +8,8 @@ The code is written for Python 3.x in linux machin.
 ### Installations:
 To install this package into your linux machine with pip, do the following:
 + First, make sure that [MCEvidence](https://github.com/yabebalFantaye/MCEvidence) is installed.
-+ To run package in parallel mode install mpi4py and openmpi in your linux machine.
-+ Then in a terminal, run 
++ For parallel mode install mpi4py and openmpi in your linux machine.
++ Then in a terminal, run the following commands:
      ```
      $ git clone https://github.com/ahmadiphy/MCKLdivergence
      $ cd MCKLdivergence
