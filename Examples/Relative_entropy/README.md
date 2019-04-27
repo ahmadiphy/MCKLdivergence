@@ -1,3 +1,4 @@
 # LINEAR GAUSSIAN MODEL
 
-Here is a simple example to show how use MCKLD code:
+Assume a simple model function as:  
+F(\Theta) = M\Theta
