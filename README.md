@@ -21,3 +21,11 @@ To install this package directly with pip without clonning:
 
 
 ### Example:
+In the Example folder there are two simple examples for estimation of the relative entropy and the expected relative entropy 
+
+
+
+###If you use the code, please cite the following papers
+1- ................. (Meharbi and Ahmadi (2019))
+2- https://arxiv.org/abs/1704.03472 (Heavens et. al. (2017))
+
