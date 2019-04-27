@@ -14,7 +14,7 @@ The exact realtive entropy in this case is RE = 15.80
 To estimate the relative entropy from the chain, We use an MCMC sampler to generate a sample chain and compute \log(prior) at each sample.  
 In example.py code, these inputs are used to estimate the relative entropy. 
 Note that, we also provide M, C and D matrix for this example.  
-C = likelihood covarince matrix
+C = likelihood covarince matrix  
 D = simulated data
 
 
