@@ -1,7 +1,7 @@
 # MCKLdivergence
 A python package to estimate the relative entropy between the prior and posterior from an MCMC chain.
 The code also estimates the expected relative entropy from the likelihood and a sample of prior.
-For more detiales see ......
+For more detiales see https://arxiv.org/abs/1904.11920
 
 The code is written for Python 3.x in linux machin.
 
@@ -23,6 +23,6 @@ In the Example folder there are two simple examples for estimation of the relati
 
 
 ### If you use the code, please cite the following papers:
-1- ................. (Meharbi and Ahmadi (2019))  
+1- https://arxiv.org/abs/1904.11920 (Meharbi and Ahmadi (2019))  
 2- https://arxiv.org/abs/1704.03472 (Heavens et. al. (2017))
 
