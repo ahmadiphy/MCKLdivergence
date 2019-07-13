@@ -23,6 +23,6 @@ In the Example folder there are two simple examples for estimation of the relati
 
 
 ### If you use the code, please cite the following papers:
-1- https://arxiv.org/abs/1904.11920 (Meharbi and Ahmadi (2019))  
+1- https://arxiv.org/abs/1904.11920 (Meharbi and Ahmadi-Rahmat (2019))  
 2- https://arxiv.org/abs/1704.03472 (Heavens et. al. (2017))
 
