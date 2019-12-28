@@ -13,7 +13,7 @@ To install this package into your linux machine with pip, do the following:
      ```
      $ git clone https://github.com/ahmadiphy/MCKLdivergence
      $ cd MCKLdivergence
-     $ python setup.py install (or pip install -e .)
+     $ pip install -e .
      ```
 
 
