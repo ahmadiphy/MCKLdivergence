@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@author: Abolfazl Ahmadi
+@author : Abolfazl Ahmadi
 """
 
 __authors__ = "Ahmad Mehrabi & Abolfazl Ahmadi Rahmat"
@@ -10,13 +10,13 @@ __version__ = '-'.join(__version_info__)
 __status__ = "Development"
 
 
-__check_mce_installed__=False
+__check_mce_installed__ = False
 try:
     from MCEvidence import MCEvidence
-    __check_mce_installed__=True
+    __check_mce_installed__ = True
 except:
     print("Dependency ERROR! 'MCEvidence not found!")
-    __check_mce_installed__=False
+    __check_mce_installed__ = False
     
 import numpy as np
 import inspect, os, sys
@@ -36,11 +36,11 @@ class BaseFuncs:
         
 class Rel_ent(BaseFuncs):
     'this is mylass form of the package'
-    def __init__(self,chain_path=None,lnprior_path=None,inThinlen=0.0,inBurnlen=0.0):
-        self.state=False
-        if chain_path!=None:
-            if lnprior_path!=None:
-                self.state=True
+    def __init__(self, chain_path=None, lnprior_path=None, inThinlen=0.0, inBurnlen=0.0):
+        self.state = False
+        if chain_path != None:
+            if lnprior_path != None:
+                self.state = True
             else:
                 self.printErr('Problem in loading lnprior')
         else:
