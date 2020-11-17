@@ -5,43 +5,43 @@ from mpi4py import MPI
 import time
 cwd = os.getcwd()
 
-nn=int(sys.argv[1])
-ll=int(sys.argv[2])
+nn = int(sys.argv[1])
+ll = int(sys.argv[2])
 s_path = str(sys.argv[3])
-sample=np.genfromtxt(s_path)
+sample = np.genfromtxt(s_path)
 l_path = str(sys.argv[4])
-like_cov=np.genfromtxt(l_path)
-fpath= str(sys.argv[5])
-ere=0
-ti=0
-state=True
+like_cov = np.genfromtxt(l_path)
+fpath = str(sys.argv[5])
+ere = 0
+ti = 0
+state = True
 
-if ll>len(sample):
+if ll > len(sample):
     print('The number of sample used to estimate expected relative entropy should be smaller than given sample size')
-    state=False
+    state = False
 
 sys.path.append(fpath)
 from Functions import model_function
-mf=model_function()
+mf = model_function()
 
 #This function has been used in the code
 def MAH_Distance(x,y):
     return np.transpose(x)@y@x
 
-def jfun(i,l,data,sample,cov_like_inv):
-    ss=0
-    fl=float(l)
+def jfun(i, l, data, sample, cov_like_inv):
+    ss = 0
+    fl = float(l)
     for j in range(l):
-        ss=ss+np.exp(-0.5*MAH_Distance(data[i]-mf.fun(sample[j]),cov_like_inv))
+        ss = ss + np.exp(-0.5*MAH_Distance(data[i]-mf.fun(sample[j]), cov_like_inv))
     term2 = np.log(ss/fl)
-    term1 = -0.5*MAH_Distance(data[i]-mf.fun(sample[i]),cov_like_inv)
-    return term1-term2
+    term1 = -0.5*MAH_Distance(data[i]-mf.fun(sample[i]), cov_like_inv)
+    return term1 - term2
 
-def expecte_relative_entropy(sample,likelihood_cov,n,l):
+def expecte_relative_entropy(sample, likelihood_cov, n, l):
      #genertaing data sample
-     fl=float(l)
+     fl = float(l)
      cov_like_inv = inv(likelihood_cov)
-     data = np.zeros((l,n))
+     data = np.zeros((l, n))
      for i in range(l):
           data[i] = np.random.multivariate_normal(mf.fun(sample[i]), likelihood_cov) 
      comm = MPI.COMM_WORLD
@@ -73,11 +73,11 @@ def expecte_relative_entropy(sample,likelihood_cov,n,l):
      if rank == 0:
          print ("time spent with ", size, " threads in milliseconds")
          print ("-----", int((time.time()-start_time)*1000), "-----")
-         exp_res=total[0]/fl
-         ts=int((time.time()-start_time)*1000)
-         CF=str(fpath)+'cash.txt'
+         exp_res = total[0]/fl
+         ts = int((time.time()-start_time)*1000)
+         CF = str(fpath)+'cash.txt'
          file = open(CF,'a')
          file.write(str(exp_res))
          return exp_res
-if state==True:
-    ere=expecte_relative_entropy(sample,like_cov,nn,ll)
+if state == True:
+    ere = expecte_relative_entropy(sample, like_cov, nn, ll)
