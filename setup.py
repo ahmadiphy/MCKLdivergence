@@ -13,6 +13,6 @@ setup(
 	authors = 'Ahmad Mehrabi, Abolfazl Ahmadi Rahmat',
 	url = 'https://github.com/ahmadiphy/MCKLdivergence',
 	packages = [],
-	scripts = ['MCKLD.py','MCKLD_parallelERE.py'],
+	scripts = ['MCKLD.py', 'MCKLD_parallelERE.py'],
 	install_requires = ['MCEvidence'],
 	)
