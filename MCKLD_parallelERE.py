@@ -25,7 +25,7 @@ from Functions import model_function
 mf = model_function()
 
 #This function has been used in the code
-def MAH_Distance(x,y):
+def MAH_Distance(x, y):
     return np.transpose(x)@y@x
 
 def jfun(i, l, data, sample, cov_like_inv):
@@ -55,8 +55,8 @@ def expecte_relative_entropy(sample, likelihood_cov, n, l):
      comm.Barrier()
      start_time = time.time()
      temp = 0
-     for k in range(a + rank*perrank, a + (rank+1)*perrank):
-         temp = temp + jfun(k-1,l,data,sample,cov_like_inv)
+     for k in range(a+rank*perrank, a+(rank+1)*perrank):
+         temp = temp + jfun(k-1, l, data, sample, cov_like_inv)
 
      summ[0] = temp
 
@@ -75,8 +75,8 @@ def expecte_relative_entropy(sample, likelihood_cov, n, l):
          print ("-----", int((time.time()-start_time)*1000), "-----")
          exp_res = total[0]/fl
          ts = int((time.time()-start_time)*1000)
-         CF = str(fpath)+'cash.txt'
-         file = open(CF,'a')
+         CF = str(fpath) + 'cash.txt'
+         file = open(CF, 'a')
          file.write(str(exp_res))
          return exp_res
 if state == True:
