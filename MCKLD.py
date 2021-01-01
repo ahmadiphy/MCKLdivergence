@@ -23,9 +23,9 @@ import inspect, os, sys
 
 
 class BaseFuncs:
-    def printErr(self,info):
+    def printErr(self, info):
         print("ERROR!:{}".format(info))
-    def printInfo(self,info):
+    def printInfo(self, info):
         print("INFO:{}".format(info))
         # Disable
     def blockPrint(self):
@@ -53,11 +53,11 @@ class Rel_ent(BaseFuncs):
             self.chain = np.genfromtxt(chain_path)
             self.printInfo('Loading lnprior from {}'.format(lnprior_path))
             lnprior = np.genfromtxt(lnprior_path)
-            self.Blen=int(self.Burnlen*len(lnprior))
-            lnp=self.chain[:, 1]
+            self.Blen = int(self.Burnlen*len(lnprior))
+            lnp = self.chain[:, 1]
             self.printInfo("All data loaded.")
             self.lnlike = lnp - lnprior
-            self.lnlike=self.lnlike[self.Blen:]
+            self.lnlike = self.lnlike[self.Blen:]
     def printRes(self, resVec):
         for k in range(len(resVec)):
             print('D[k={}] = {}'.format(k+1, resVec[k]))
@@ -66,7 +66,7 @@ class Rel_ent(BaseFuncs):
         result = -1 * mce + avgL
         return result
     def Run(self):
-        if self.state==True:
+        if self.state == True:
             self.printInfo("Calculatong MCEvidence...")
             
             mce = MCEvidence([self.chain], ischain=True, thinlen=self.Thinlen, burnlen=self.Burnlen).evidence(pos_lnp=True)
@@ -100,8 +100,8 @@ class Exp_rel_ent(BaseFuncs):
             from Functions import model_function
             self.mf = model_function()
     def check_input(self):
-        if len(self.Like_Cov_Matrix)>self.n or len(self.Like_Cov_Matrix)!=len(self.Like_Cov_Matrix[0]):
-            self.printErr('The likelihood_cov matrix should be n*n')
+        if len(self.Like_Cov_Matrix) > self.n or len(self.Like_Cov_Matrix) != len(self.Like_Cov_Matrix[0]):
+            self.printErr('The likelihood_cov matrix should be a square matrix (n*n)!')
             self.state = False
     #This function has been used in the code
     def MAH_Distance(self, x, y):
@@ -112,7 +112,7 @@ class Exp_rel_ent(BaseFuncs):
         for j in range(l):
             ss = ss + np.exp(-0.5*self.MAH_Distance(data[i]-self.mf.fun(self.sample[j]), cov_like_inv))
         term2 = np.log(ss/fl)
-        term1 = -0.5*self.MAH_Distance(data[i]-self.mf.fun(self.sample[i]), cov_like_inv)
+        term1 = -0.5 * self.MAH_Distance(data[i]-self.mf.fun(self.sample[i]), cov_like_inv)
         return term1 - term2
     def Run(self, l_in=0):
         self.l = l_in
@@ -148,7 +148,7 @@ class Exp_rel_ent(BaseFuncs):
         self.l = l_in
         if self.l == 0:
             #ERROR
-            self.printErr("data length is zero")
+            self.printErr("data length is zero!")
             self.state = False
         else:
             self.check_input()
