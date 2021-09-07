@@ -3,7 +3,7 @@ A python package to estimate the relative entropy between the prior and posterio
 The code also estimates the expected relative entropy from the likelihood and a sample of prior.
 For more detiales see https://arxiv.org/abs/1904.11920
 
-The code is written for Python 3.x in linux machin.
+The code is written for Python 3.x in linux machine.
 
 ### Installations:
 To install this package into your linux machine with pip, do the following:
