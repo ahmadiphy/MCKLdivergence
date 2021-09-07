@@ -46,7 +46,7 @@ class Rel_ent(BaseFuncs):
         else:
             self.printErr('Problem in loading chain!')
         
-        if self.state == True:
+        if self.state:
             self.Thinlen = inThinlen
             self.Burnlen = inBurnlen
             self.printInfo('Loading chain from {}'.format(chain_path))
@@ -62,11 +62,11 @@ class Rel_ent(BaseFuncs):
         for k in range(len(resVec)):
             print('D[k={}] = {}'.format(k+1, resVec[k]))
     def myResult(self, avgL, mce):
-        result=np.zeros(len(mce))
+        result = np.zeros(len(mce))
         result = -1 * mce + avgL
         return result
     def Run(self):
-        if self.state == True:
+        if self.state:
             self.printInfo("Calculatong MCEvidence...")
             
             mce = MCEvidence([self.chain], ischain=True, thinlen=self.Thinlen, burnlen=self.Burnlen).evidence(pos_lnp=True)
@@ -90,7 +90,7 @@ class Exp_rel_ent(BaseFuncs):
                 self.printErr('input error, Like Cov Matrix!')
         else:
             self.printErr('import error, sample path dose not exist!')
-        if self.state == True:
+        if self.state:
             self.sPath = sample_path
             self.Like_Cov_Matrix = lcm
             self.n = n_in
@@ -119,7 +119,7 @@ class Exp_rel_ent(BaseFuncs):
         if self.l == 0:
             #ERROR
             self.state = False
-        if self.state == True:
+        if self.state:
             self.printInfo('file importing...')
             self.printInfo('samples file importing '+self.sPath)
             self.sample = np.genfromtxt(self.sPath)
@@ -128,7 +128,7 @@ class Exp_rel_ent(BaseFuncs):
             if self.l>len(self.sample):
                 self.printErr('The number of sample used to estimate expected relative entropy should be smaller than given sample size')
                 self.state = False
-            if self.state == True:
+            if self.state:
                 from numpy.linalg import inv
                 self.printInfo('Expected Relative Entropy (ERE):')
                 self.printInfo('genertaing data sample...')
@@ -161,7 +161,7 @@ class Exp_rel_ent(BaseFuncs):
                 " (number of cores of this machine)!"
                 )
             self.state = False
-        if self.state == True:
+        if self.state:
             lPath = self.fpath + 'cash_0000_cov.txt'
             np.savetxt(lPath, self.Like_Cov_Matrix)
             my_path = str(__file__)
