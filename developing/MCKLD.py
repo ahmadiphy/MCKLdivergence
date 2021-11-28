@@ -145,4 +145,25 @@ class Exp_rel_ent(BaseFuncs):
         else:
             self.printErr('State Error')
     def PRun(self, l_in=0, coreN=1):
+        nn = int(sys.argv[1])
+        ll = int(sys.argv[2])
+        s_path = str(sys.argv[3])
+        sample = np.genfromtxt(s_path)
+        l_path = str(sys.argv[4])
+        like_cov = np.genfromtxt(l_path)
+        fpath = str(sys.argv[5])
+        ere = 0
+        ti = 0
+        state = True
+
+        if ll > len(sample):
+            print('The number of sample used to estimate expected relative entropy should be smaller than given sample size')
+            state = False
+        sys.path.append(fpath)
+from Functions import model_function
+mf = model_function()
+
+#This function has been used in the code
+def MAH_Distance(x, y):
+    return np.transpose(x)@y@x
         
